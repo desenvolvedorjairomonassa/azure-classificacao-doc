@@ -1,0 +1,7 @@
+azure-functions
+azure-storage-blob
+PyMuPDF
+psycopg2
+sentence-transformers
+python-dotenv
+openai
