@@ -2,7 +2,7 @@
 # Projeto de Processamento e Classificação de Documentos
 
 Este projeto implementa uma arquitetura na Azure para processar, classificar e armazenar documentos PDF. Utiliza vários serviços da Azure, incluindo Azure Functions, Azure Storage, Azure Queue Storage, OpenAI API e PostgreSQL com a extensão `pgvector`.
-
+<img src="classificador-doc.png"/>
 ## Arquitetura
 
 A arquitetura do projeto é composta pelos seguintes componentes:
