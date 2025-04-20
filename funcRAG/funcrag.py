@@ -56,7 +56,7 @@ def main(msg: func.QueueMessage) -> None:
             )
 
         metadata = {"blob_name": blob_name, "text": text}
-
+        vector = vector.data[0].embedding
         # Inserir vetor no banco de dados
         insert_vector_into_db(vector, metadata)
         logging.info(f"Vetor inserido no banco de dados para o blob: {blob_name}")
