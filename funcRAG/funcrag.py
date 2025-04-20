@@ -5,7 +5,7 @@ import fitz  # PyMuPDF
 import os
 import json
 import psycopg2
-from sentence_transformers import SentenceTransformer
+from openai import OpenAI
 from dotenv import load_dotenv
 
 # Carregar variáveis de ambiente
@@ -16,7 +16,10 @@ blob_service_client = BlobServiceClient.from_connection_string(os.getenv("AZURE_
 classified_container_name = "classified-container"
 dead_letter_container_name = "dead-letter-container"
 db_connection_string = os.getenv("DB_CONNECTION_STRING")
-model = 'text-embedding-3-small'
+openai_api_key = os.getenv("OPENAI_API_KEY")
+
+# Inicializar o cliente OpenAI
+openai_client = OpenAI(api_key=openai_api_key)
 
 def insert_vector_into_db(vector, metadata):
     """Insere um vetor no banco de dados"""
@@ -49,14 +52,16 @@ def main(msg: func.QueueMessage) -> None:
             page = pdf_document.load_page(page_num)
             text += page.get_text()
 
-        # Tokenizar e vetorizar o texto
-        vector = client.embeddings.create(
-                input=text,
-                model=model
-            )
+        # Gerar embedding usando o OpenAI
+        response = openai_client.embeddings.create(
+            input=text,
+            model="text-embedding-3-small"
+        )
 
+        # Obter o vetor de embedding
+        vector = response.data[0].embedding
         metadata = {"blob_name": blob_name, "text": text}
-        vector = vector.data[0].embedding
+
         # Inserir vetor no banco de dados
         insert_vector_into_db(vector, metadata)
         logging.info(f"Vetor inserido no banco de dados para o blob: {blob_name}")
